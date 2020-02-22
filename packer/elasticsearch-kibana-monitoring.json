@@ -1,0 +1,36 @@
+{
+    "variables": {
+        "aws_access_key": "AKIAU4GK7N7AZUMIF25N",
+        "aws_secret_key": "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",
+        "region": "ap-southeast-1"
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `aws_access_key`}}",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "region": "{{ user `region`}}",
+            "source_ami": "ami-0f02b24005e4aec36",
+            "instance_type": "t2.micro",
+            "ssh_username": "ec2-user",
+            "ami_name": "elasticsearch-kibana-monitoring {{timestamp}}"
+        }
+    ],
+    "provisioners": [
+        {
+          "type": "shell",
+          "script": "packer/scripts/ansible.sh"
+        },
+        {
+            "type": "ansible-local",
+            "playbook_file": "ansible/site.yml",
+            "role_paths": [
+              "ansible/roles/git",
+              "ansible/roles/elasticsearch",
+              "ansible/roles/kibana",
+              "ansible/roles/gradle"
+            ],
+            "group_vars": "ansible/group_vars"
+          }
+    ]
+}

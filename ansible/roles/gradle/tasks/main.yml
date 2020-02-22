@@ -1,0 +1,35 @@
+---
+- name: Download gradle
+  get_url:
+    url: https://services.gradle.org/distributions/gradle-4.7-bin.zip
+    dest: /tmp/gradle.zip
+    mode: '0440'
+
+- name: Install unzip
+  yum:
+    name: unzip
+    state: present
+
+- name: Install java-1.8.0-openjdk
+  yum:
+    name: java-1.8.0-openjdk
+    state: present
+
+- name: Create opt folder
+  file:
+    path: /opt/gradle
+    state: directory
+    mode: '0755'
+
+- name: Unzip grade into new directory
+  shell: unzip -d /opt/gradle/ /tmp/gradle.zip
+
+- name: Add path to profile for gradle
+  shell: echo -e "export PATH=\$PATH:/opt/gradle/gradle-4.7/bin" | tee /etc/profile.d/gradle.sh
+
+- name: Change user, group and permissions for public key
+  file:
+    path: /etc/profile.d/gradle.sh
+    owner: ec2-user
+    group: ec2-user
+    mode: '0755'

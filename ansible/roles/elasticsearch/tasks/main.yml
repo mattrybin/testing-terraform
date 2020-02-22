@@ -1,0 +1,28 @@
+- name: Add repository Elasticsearch
+  yum_repository:
+    name: elasticsearch
+    description: Elasticsearch repository for 7.x packages
+    baseurl: https://artifacts.elastic.co/packages/7.x/yum
+    gpgcheck: yes
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    enabled: yes
+
+- name: Install Elasticsearch package
+  yum:
+    name: elasticsearch
+    state: present
+
+- name: Remove default elasticsearch.yml file
+  file: name=/etc/elasticsearch/elasticsearch.yml state=absent
+
+- name: Add new elasticsearch.yml file
+  template:
+    src: templates/elasticsearch.yml
+    dest: /etc/elasticsearch/elasticsearch.yml
+
+- name: Make sure elasticsearch is running
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    masked: no
+    name: elasticsearch.service

@@ -1,0 +1,28 @@
+- name: Add repository Kibana
+  yum_repository:
+    name: kibana
+    description: Kibana repository for 7.x packages
+    baseurl: https://artifacts.elastic.co/packages/7.x/yum
+    gpgcheck: yes
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    enabled: yes
+
+- name: Install Kibana package
+  yum:
+    name: kibana
+    state: present
+
+- name: Remove default kibana.yml file
+  file: name=/etc/kibana/kibana.yml state=absent
+
+- name: Add new kibana.yml file
+  template:
+    src: templates/kibana.yml
+    dest: /etc/kibana/kibana.yml
+
+- name: Make sure kibana is running
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    masked: no
+    name: kibana.service

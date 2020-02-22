@@ -1,0 +1,13 @@
+---
+- name: Install Git, MySQL, Nginx, and projects
+  hosts: all
+  become: yes
+  remote_user: ec2-user
+
+  roles:
+    - git
+    - gradle
+    # - elasticsearch
+    # - kibana
+    # - nginx
+    # - growlerfriday

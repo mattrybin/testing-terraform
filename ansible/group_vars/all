@@ -1,0 +1,4 @@
+user: ec2-user
+
+# You shouldn't need to change this.
+mysql_port: 3306
